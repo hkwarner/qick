@@ -1423,8 +1423,9 @@ class QickProgram(AbsQickProgram):
         for key in self.dump_keys:
             setattr(self, key, progdict[key])
 
-    def acquire(self, soc, reads_per_rep=1, load_pulses=True, start_src="internal", progress=False, debug=False):
-        """Acquire data using the accumulated readout.
+    def acquire(self, soc, reads_per_rep=1, load_pulses=True, start_src="internal", progress=False, debug=False,
+                enable_buf = False, ):
+        """Acquire data using the accumulated readout. HERE is where I'm modifying for g2 I think 
 
         Parameters
         ----------
@@ -1440,6 +1441,8 @@ class QickProgram(AbsQickProgram):
             if true, displays progress bar
         debug: bool
             if true, displays assembly code for tProc program
+        enable_buf : bool
+            if true, enables buffering along 
 
         Returns
         -------
@@ -1481,7 +1484,7 @@ class QickProgram(AbsQickProgram):
         shots = None
         for ir in tqdm(range(self.rounds), disable=hiderounds):
             # Configure and enable buffer capture.
-            self.config_bufs(soc, enable_avg=True, enable_buf=False)
+            self.config_bufs(soc, enable_avg=True, enable_buf=enable_buf)
 
             count = 0
             with tqdm(total=total_count, disable=hidereps) as pbar:
